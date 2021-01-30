@@ -1,5 +1,5 @@
-VAR dias_duracion_historia = 3
-VAR max_preguntas_dia = 2
+VAR dias_duracion_historia = 20
+VAR max_preguntas_dia = 6
 
 VAR dias_transcurridos = 0
 VAR preguntas_realizadas = 0
@@ -24,6 +24,10 @@ VAR preguntas_realizadas = 0
         + [No se le ve muy afectado, la verdad.] -> afectado
         + [¿Problemas en la relación quizás?] -> relacion
         + [¿Mantendrán el contacto?] -> ultima_vez
+        + {relacion} [¿Cómo de intensa sería su relación?] -> relacion_intensa
+        + {josh.sueldo} [¿Diría Josh la verdad respecto al sueldo de Marie?] -> sueldo
+        + {sueldo and jennifer.sueldo and (not jennifer.infidelidad)} [¿Por qué no coinciden las opiniones de Jennifer y Patrick?] -> opiniones_sueldo
+        // TODO + {relacion} [Es momento de sacar el tema del embarazo] -> embarazo
         + [No tengo nada más que preguntarle] -> nada_mas
     - else:
         + [Se me está haciendo tarde...] -> fin_dia
@@ -50,6 +54,44 @@ VAR preguntas_realizadas = 0
 - Es que ya no me acuerdo. Seguramente hace un mes, cuando me llamó borracha porque me echaba de menos. Colgué en cuanto la escuché, es una dramática
 -> interrogatorio
 
+
+= relacion_intensa // necesita "relación" (1)
+~ preguntas_realizadas++
+- ¿Cuánto tiempo estuvisteis juntos? ¿Le viste futuro en algún momento?
+- Pues la verdad es que no sabría decirte exactamente, pero llegamos a estar más de un año juntos. Al principio tenía cierta esperanza en que lo nuestro podía funcionar, pero con el paso de los meses la ilusión se fue perdiendo y las últimas semanas apenas si nos veíamos... 
++ [Sigamos insistiendo] ¿Y eso? ¿La relación se fue enfriando?
+    Sí, esa fue una de las causas. Además, como era la época de verano, Marie cada vez pasaba más tiempo en el trabajo, con lo cual nos era aún más difícil vernos.
+    -> interrogatorio
+
+
+= sueldo // necesita "josh.sueldo" (1)
+~ preguntas_realizadas++
+- Josh me dijo que los sueldos en su cafetería son buenos, ¿sabes si es cierto eso?
+- ¿Buenos? Se referirá al suyo, porque la pobre de Marie siempre llegaba justa a fin de mes. Yo le ayudaba con todos los temas de Hacienda y daba pena ver la nómina que tenía... Es cierto que le solían dar un plus en negro, pero no compensaba.
+-> interrogatorio
+
+
+= opiniones_sueldo // necesita "sueldo" y "jennifer.sueldo" (3) - prohibido "jennifer.infidelidad"
+~ preguntas_realizadas++
+- Pregunté a Jennifer también por el sueldo de Marie y su respuesta fue distinta a la tuya... ¿A qué crees que se debe?
+- Eso tendrías que preguntárselo a ella. Yo ya te digo que su sueldo era una miseria teniendo en cuenta todo lo que trabajaba.
+-> interrogatorio
+
+
+= embarazo
+~ preguntas_realizadas++
+- Según tengo entendido, Marie se quedó embarazada unos meses antes de su desaparición, ¿no es así?
+- Sí, así es. Se quedó embarazada. La verdad que fue una situación difícil porque, como te dije, nuestra relación no era lo que se dice idílica, y, como no fue algo buscado, tuvimos alguna que otra discusión más fuerte de lo habitual.
++ [¿Más fuerte de lo habitual?] -> pelea_embarazo
++ [No creo que vaya a sacar nada interesante de esto.] -> interrogatorio
+
+
+= pelea_embarazo
+- ¿A qué te refieres con eso último? ¿Llegásteis a las manos?
+- No no... Jamás le pondría la mano encima... Lo juro... Es solo que las voces se nos fueron un poco de las manos y un vecino llamó a la policía. Pero de verdad que no le hice daño...
++ [Esconde algo, pero con lo que sé hasta ahora veo difícil conseguir algo más] -> interrogatorio
+
+
 /* 
     Fin conversación Patrick
 */
@@ -65,8 +107,12 @@ VAR preguntas_realizadas = 0
 { 
     - preguntas_realizadas < max_preguntas_dia:
         + [¿Cómo le habrá afectado la aparición de su amiga?] -> afectada
-        + [Hasta entre los mejores amigos suelen haber piques de vez en cuando...] -> relacion
+        + [Ya se sabe que hasta entre los mejores amigos hay piques de vez en cuando.] -> relacion
         + [¿Saldrían mucho de fiesta?] -> fiesta
+        + {josh.sueldo} [¿Diría Josh la verdad respecto al sueldo de Marie?] -> sueldo
+        + {sueldo and patrick.sueldo} [¿Por qué no coinciden las opiniones de Jennifer y Patrick?] -> opiniones_sueldo
+        + {josh.simpatica} [Veamos si Jennifer sabe de algún cliente que sobrepasara el límite...] -> clientes
+        + {opiniones_sueldo and clientes} [Hmm... Creo que Marie se llevaba demasiado bien con Josh para ser su jefe...] -> infidelidad
         + [No tengo nada más que preguntarle] -> nada_mas
     - else:
         + [Se me está haciendo tarde...] -> fin_dia
@@ -97,6 +143,41 @@ VAR preguntas_realizadas = 0
     -> interrogatorio
 + [Mejor no seguir indagando por aquí] -> interrogatorio
 
+
+= sueldo // necesita "josh.sueldo" (1)
+~ preguntas_realizadas++
+- Josh me dijo que los sueldos en su cafetería son buenos, ¿sabes si es cierto eso?
+- Hasta donde yo sé, creo que son muy similares al resto de cafeterías. Aunque también es cierto que Marie nunca se quejó de ello delante mía.
+-> interrogatorio
+
+
+= opiniones_sueldo // necesita "sueldo" y "patrick.sueldo" (3)
+~ preguntas_realizadas++
+- Pregunté a Patrick también por el sueldo de Marie y su respuesta fue distinta a la tuya... ¿A qué crees que se debe?
+- Pues no sé, la verdad. Ya te dije que Marie nunca se quejaba. Quizás le ocultaba parte del dinero que ganaba.
++ [¿Ocultarle parte del sueldo?] ¿Por qué iba a ocultárselo?
+    - Bueno, la relación que tenían no era especialmente buena y Marie no confiaba del todo en Patrick. Como te he dicho, me extrañaría mucho que no cobrara bien teniendo en cuenta su buena relación con Josh...
+-> interrogatorio
+
+
+= clientes // necesita "josh.simpatica" (4)
+~ preguntas_realizadas++
+- ¿Sabes si en el trabajo alguna vez tuvo problemas con algún cliente?
+- Bueno... no más de los habituales que puede tener una chica como ella atendiendo en una cafetería. Pero nunca llegó muy lejos porque Josh siempre estaba ahí pendiente de protegerla.
+-> interrogatorio
+
+
+= infidelidad // necesita "opiniones_sueldo" y "clientes" (8)
+~ preguntas_realizadas++
+- Por lo que me has dicho hasta ahora, la relación entre Marie y Josh parece que era muy buena, ¿no?
+- Si, maravillosa, ya me gustaría a mí tener una relación con mi jefe... Bueno, quizás no tanto.
++ [Parece que he encontrado algo...] ¿Una relación excesivamente buena dices?
+    - Si, bueno... A ver... Es que al final un jefe no deja de serlo por mucho cariño que le tengas... No sé...
+    + [¿Tenerle cariño a tu jefe? Eso desde luego no es habitual] ¿Cariño dices?
+        - Si... O sea, siempre se ha dicho que el roce hace el cariño... Y, bueno, ellos... No pudieron evitarlo. Surgió algo y tuvieron más de un desliz, si.
+-> interrogatorio
+
+
 // Fin conversación Jennifer
 
 
@@ -112,6 +193,8 @@ VAR preguntas_realizadas = 0
         + [¿Qué le habrá parecido la aparición de Marie?] -> afectado
         + [Es posible que tuviera algún problema personal...] -> problemas_personales
         + [¿Estaría Marie contenta con su sueldo?] -> sueldo
+        + {patrick.relacion_intensa} [¿Quizás notó algo ese verano que estuvo trabajando más?] -> trabajo_verano
+        + {trabajo_verano} [¿Su simpatía le jugaría alguna mala pasada en algún momento?] -> simpatica
         + [No tengo nada más que preguntarle] -> nada_mas
     - else:
         + [Se me está haciendo tarde...] -> fin_dia
@@ -138,6 +221,21 @@ VAR preguntas_realizadas = 0
 - Con respecto al tema económico, los sueldos de mis empleados son muy buenos y, en todo caso, de necesitar ayuda económica, ella sabía que me lo podía pedir sin problemas. Teníamos una relación de confianza.
 -> interrogatorio
 
+
+= trabajo_verano // necesita "relacion_intensa" de Patrick (2)
+~ preguntas_realizadas++
+- Si no me equivoco, el verano antes de la desaparición, Marie estuvo echando horas extra en la cafetería. ¿Notó usted algo raro?
+- No, nada. Sé que no estaba atravesando un buen momento con el chico con el que estaba saliendo, pero nunca dejó que eso te interpusiera en su camino. Siempre sacaba su mejor sonrisa y era capaz de embelesar a cualquiera.
+-> interrogatorio
+
+
+= simpatica // necesita "trabajo_verano" (3)
+~ preguntas_realizadas++
+- Como Marie era tan simpática con los clientes, no sería extraño que en algún momento alguno de ellos intentase acercarse más de lo debido... usted ya me entiende.
+- Si, si, sé a qué se refiere. Y puedo asegurarle que no. Desde que estoy al mando, esta cafetería siempre ha sido segura en ese aspecto y así seguirá siendo. Evidentemente ha habido algún cliente que ha mostrado alguna intención, pero siempre lo hemos cortado de raíz. Jamás permitiría algo así. 
+-> interrogatorio
+
+
 // Fin conversación Josh
 
 
@@ -149,6 +247,7 @@ VAR preguntas_realizadas = 0
 
 == fin_dia ==
 - Ya es tarde, no quiero molestar más. Muchas gracias por su tiempo.
+- [Conversación con la novia...]
 ~ dias_transcurridos++
 {
     - dias_transcurridos < dias_duracion_historia:
