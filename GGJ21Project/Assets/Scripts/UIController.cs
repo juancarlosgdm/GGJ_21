@@ -9,7 +9,7 @@ public class UIController : MonoBehaviour {
 
     public Text remainingQuestionsText;
 
-    public Text remainingDaysText;
+    public List<GameObject> calendarDays;
 
     #region Unity Messages
 
@@ -25,9 +25,9 @@ public class UIController : MonoBehaviour {
     #endregion
 
     public static void SetRemainingDays(int days) {
-        string text = instance.remainingDaysText.text;
-        text = text.Remove(text.Length - 1);
-        instance.remainingDaysText.text = (text + days.ToString());
+        for (int i=0; i<instance.calendarDays.Count; i++) {
+            instance.calendarDays[i].SetActive(i >= days);
+        }
     }
 
     public static void SetRemainingQuestions(int questions) {

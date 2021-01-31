@@ -19,6 +19,8 @@ public class StoryManager : MonoBehaviour {
     [Header("Mobile UI")]
     [SerializeField]
     private GameObject mobileCanvas;
+    [SerializeField]
+    private SuspectAnimations suspectAnimations;
     [Space]
     [SerializeField]
     private Transform conversationContent;
@@ -218,6 +220,7 @@ public class StoryManager : MonoBehaviour {
     public void SuspectSelected(int option) {
         // Activa la interfaz del interrogatorio y notifica la selección
         mobileCanvas.SetActive(true);
+        suspectAnimations.SetSuspect(option);
         story.ChooseChoiceIndex(option);
         RefreshView();
     }
