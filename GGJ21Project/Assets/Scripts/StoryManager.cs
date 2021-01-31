@@ -60,6 +60,7 @@ public class StoryManager : MonoBehaviour {
     void StartStory() {
         story = new Story(inkJSONAsset.text);
         if (OnCreateStory != null) OnCreateStory(story);
+        UIController.SetQuestionsPerDay((int)story.variablesState["max_preguntas_dia"]);
         RefreshView();
     }
 
@@ -78,7 +79,9 @@ public class StoryManager : MonoBehaviour {
             // This removes any white space from the text.
             text = text.Trim();
             // Display the text on screen!
-            CreateContentView(text, story.currentTags.Contains("catherine"));
+            if (text.Length > 0) {
+                CreateContentView(text, story.currentTags.Contains("catherine"));
+            }
         }
 
         // Display all the choices, if there are any!

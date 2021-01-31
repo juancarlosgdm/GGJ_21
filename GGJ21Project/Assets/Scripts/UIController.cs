@@ -11,6 +11,8 @@ public class UIController : MonoBehaviour {
 
     public List<GameObject> calendarDays;
 
+    private int questionsPerDay;
+
     #region Unity Messages
 
     void Awake() {
@@ -24,6 +26,10 @@ public class UIController : MonoBehaviour {
 
     #endregion
 
+    public static void SetQuestionsPerDay(int questions) {
+        instance.questionsPerDay = questions;
+    }
+
     public static void SetRemainingDays(int days) {
         for (int i=0; i<instance.calendarDays.Count; i++) {
             instance.calendarDays[i].SetActive(i >= days);
@@ -31,8 +37,8 @@ public class UIController : MonoBehaviour {
     }
 
     public static void SetRemainingQuestions(int questions) {
-        string text = instance.remainingQuestionsText.text;
-        text = text.Remove(text.Length - 1);
-        instance.remainingQuestionsText.text = (text + questions.ToString());
+        float percentage = (float)questions / (float)instance.questionsPerDay;
+        percentage *= 100;
+        instance.remainingQuestionsText.text = (percentage.ToString() + "%");
     }
 }
