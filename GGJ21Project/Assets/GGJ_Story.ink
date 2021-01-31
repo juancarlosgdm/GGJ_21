@@ -1,5 +1,5 @@
 VAR dias_duracion_historia = 4
-VAR max_preguntas_dia = 4
+VAR max_preguntas_dia = 5
 
 VAR dias_transcurridos = 0
 VAR preguntas_realizadas = 0
@@ -387,12 +387,12 @@ VAR novia = false
 = respuesta_positiva
 - Pues estoy bastante contenta con toda la información que he conseguido hoy. Ojalá seguir a este ritmo. #catherine
 - Hmm... Me alegro. Seguro que al final encuentras la solución a todo este lío y te quedas tranquila. 
-+ [...] -> nuevo_dia
++ [Hora de dormir... Hoy me he merecido un buen descanso] -> nuevo_dia
 
 = respuesta_negativa
 - La verdad es que si no me hubiese levantado de la cama habría sido igual de productivo... Tengo que mejorar mucho si quiero resolver este misterio. #catherine
 - Bueno, tranquila. Estoy segura que serás capaz de revertir la situación y poner punto final a esta historia. Eres una detective con experiencia y sabes perfectamente dónde encontrar las pistas.
-+ [...] -> nuevo_dia
++ [Mejor me acuesto ya, mañana será otro día] -> nuevo_dia
 
 // fin conversación novia
 

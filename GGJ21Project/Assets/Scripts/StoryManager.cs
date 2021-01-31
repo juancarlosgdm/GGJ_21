@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System;
 using Ink.Runtime;
 
@@ -103,10 +104,7 @@ public class StoryManager : MonoBehaviour {
         }
         // If we've read all the content and there's no choices, the story is finished!
         else {
-            Button choice = CreateChoiceView("End of story.\nRestart?");
-            choice.onClick.AddListener(delegate {
-                StartStory();
-            });
+            SceneManager.LoadScene(0);
         }
 
         // Se asegura que los ScrollView se reinicien
@@ -121,6 +119,7 @@ public class StoryManager : MonoBehaviour {
     // When we click the choice button, tell the story to choose that choice!
     void OnClickChoiceButton(Choice choice) {
         story.ChooseChoiceIndex(choice.index);
+        Debug.Log("choicing correcto: " + choice.text);
         RefreshView();
     }
 
@@ -196,7 +195,8 @@ public class StoryManager : MonoBehaviour {
         } else {
             // Conversación con la novia terminada, se oculta la interfaz
             girldfriendCanvas.SetActive(false);
-            story.ChooseChoiceIndex(0);
+            //story.ChooseChoiceIndex(0);
+            //Debug.Log("choicing novia");
             RefreshView();
         }
     }
@@ -212,6 +212,7 @@ public class StoryManager : MonoBehaviour {
                 mobileCanvas.SetActive(false);
                 girldfriendCanvas.SetActive(true);
                 story.ChooseChoiceIndex(0);
+                Debug.Log("choicing normal");
                 RefreshView();
             }
         } else {

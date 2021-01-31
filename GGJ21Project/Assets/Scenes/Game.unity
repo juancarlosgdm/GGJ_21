@@ -4858,6 +4858,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 77ed5e2476a8d4cdba6a6fb4344c6242, type: 3}
   jenniferSprites:
   - {fileID: 21300000, guid: ca8f70b1b83824df18d324cb79a1dd0c, type: 3}
+  - {fileID: 21300000, guid: cc91e8fb670c3455a9c9d6566e6ab473, type: 3}
+  - {fileID: 21300000, guid: d8a6917dde889486f9ead8dfdc04567c, type: 3}
   joshSprites:
   - {fileID: 21300000, guid: 011035ed799c343239ef5097cce685f9, type: 3}
   - {fileID: 21300000, guid: 7aae79dac77fa4b8db5adb44addcde13, type: 3}
